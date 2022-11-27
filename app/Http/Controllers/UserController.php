@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,47 +13,60 @@ class UserController extends Controller
 {
     public function index() {
 
-        return User::all();
+        return User::paginate();
     }
     public function show($id) {
         return User::find($id);
     }
-    public  function store(Request $request) {
-
-        $user = User::create([
+    public  function store(UserCreateRequest $request) {
+        $user = User::create(
+            $request->only('first_name', 'last_name', 'email') + [
+            'password' => Hash::make(1234),
+            ]);
+       /* $user = User::create([
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-
-        ]);
-
+            'password' => Hash::make(1234),
+        ]);*/
         return response($user, Response::HTTP_ACCEPTED);
     }
-
-    public function update(Request $request, $id) {
+    public function update(UserUpdateRequest $request, $id) {
 
         $user = User::find($id);
 
-       $user->update([
+        $user->update([
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
+
         ]);
 
         return response($user, Response::HTTP_ACCEPTED);
     }
 
 public function destroy($id) {
-
     User::destroy($id);
     return response(null, Response::HTTP_NO_CONTENT);
-
 }
-
-
-
-
+public function user(){
+    return \Auth::user();
+}
+    public function updateInfo(Request $request){
+        $user = \Auth::user();
+        $user->update([
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+        ]);
+        return response($user, Response::HTTP_ACCEPTED);
+    }
+    public function updatePassword(Request $request){
+        $user = \Auth::user();
+        $user->update([
+            'password' => Hash::make($request->input('password')),
+                        ]);
+        return response($user, Response::HTTP_ACCEPTED);
+    }
 
 }

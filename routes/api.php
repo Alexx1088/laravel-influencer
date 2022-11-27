@@ -24,4 +24,15 @@ Route::post('users', [\App\Http\Controllers\UserController::class, 'store']);
 Route::put('users/{id}', [\App\Http\Controllers\UserController::class, 'update']);
 Route::delete('users/{id}', [\App\Http\Controllers\UserController::class, 'destroy',]);*/
 
-Route::apiResource('users', \App\Http\Controllers\UserController::class);
+Route::post('login', [\App\Http\Controllers\AuthController::class, 'login']);
+Route::post('register', [\App\Http\Controllers\AuthController::class, 'register']);
+
+Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('user', [\App\Http\Controllers\UserController::class, 'user',]); //to get his data
+    Route::put('users/info', [\App\Http\Controllers\UserController::class, 'updateInfo',]); //to update his info
+    Route::put('users/password', [\App\Http\Controllers\UserController::class, 'updatePassword',]); //to update his password
+
+       Route::apiResource('users', \App\Http\Controllers\UserController::class);
+    Route::apiResource('roles', \App\Http\Controllers\RoleController::class);
+});
+
