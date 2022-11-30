@@ -27,12 +27,15 @@ Route::delete('users/{id}', [\App\Http\Controllers\UserController::class, 'destr
 Route::post('login', [\App\Http\Controllers\AuthController::class, 'login']);
 Route::post('register', [\App\Http\Controllers\AuthController::class, 'register']);
 
-Route::group(['middleware' => 'auth:api'], function () {
+//Route::group(['middleware' => 'auth:api'], function () {
     Route::get('user', [\App\Http\Controllers\UserController::class, 'user',]); //to get his data
     Route::put('users/info', [\App\Http\Controllers\UserController::class, 'updateInfo',]); //to update his info
     Route::put('users/password', [\App\Http\Controllers\UserController::class, 'updatePassword',]); //to update his password
+    Route::post('upload', [\App\Http\Controllers\ImageController::class, 'upload']);
 
        Route::apiResource('users', \App\Http\Controllers\UserController::class);
     Route::apiResource('roles', \App\Http\Controllers\RoleController::class);
-});
+    Route::apiResource('products', \App\Http\Controllers\ProductController::class);
+    Route::apiResource('orders', \App\Http\Controllers\OrderController::class)->only('index', 'show');
+//});
 

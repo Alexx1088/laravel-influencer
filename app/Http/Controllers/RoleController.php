@@ -11,7 +11,7 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function index()
     {
@@ -34,11 +34,11 @@ class RoleController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|Role|Role[]
      */
     public function show($id)
     {
-        //
+        return Role::find($id);
     }
 
     /**
@@ -50,7 +50,9 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $role = Role::find($id);
+        $role->update($request->only('name'));
+        return response($role, Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -61,6 +63,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Role::destroy($id);
+        return \response(null, Response::HTTP_NO_CONTENT);
     }
 }
