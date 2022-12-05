@@ -14,18 +14,21 @@ class UserController extends Controller
 {
     public function index()
     {
+   \Gate::authorize('view', 'users');
 $users = User::with('role')->paginate();
         return UserResource::collection($users);
     }
 
     public function show($id)
     {
+        \Gate::authorize('edit', 'users');
         $user = User::with('role')->find($id);
         return new UserResource($user);
     }
 
     public function store(UserCreateRequest $request)
     {
+        \Gate::authorize('view', 'users');
         $user = User::create(
             $request->only('first_name', 'last_name', 'email', 'role_id') + [
                 'password' => Hash::make(1234),
@@ -41,7 +44,7 @@ $users = User::with('role')->paginate();
 
     public function update(UserUpdateRequest $request, $id)
     {
-
+        \Gate::authorize('edit', 'users');
         $user = User::find($id);
 
         $user->update([
@@ -57,13 +60,20 @@ $users = User::with('role')->paginate();
 
     public function destroy($id)
     {
+        \Gate::authorize('edit', 'users');
         User::destroy($id);
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
     public function user()
     {
-        return new UserResource(\Auth::user());
+        $user = \Auth::user();
+     //   dd($user);
+        return (new UserResource($user))->additional([
+            'data' => [
+                'permissions' => $user->permissions()
+            ]
+        ]);
     }
 
     public function updateInfo(Request $request)
