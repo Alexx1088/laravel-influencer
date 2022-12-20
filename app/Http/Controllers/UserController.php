@@ -67,8 +67,8 @@ $users = User::with('role')->paginate();
 
     public function user()
     {
-        $user = \Auth::user();
-     //   dd($user);
+               $user = \Auth::user();
+   // dd($user);
         return (new UserResource($user))->additional([
             'data' => [
                 'permissions' => $user->permissions()

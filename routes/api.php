@@ -28,7 +28,10 @@ Route::post('login', [\App\Http\Controllers\AuthController::class, 'login']);
 Route::post('register', [\App\Http\Controllers\AuthController::class, 'register']);
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('user', [\App\Http\Controllers\UserController::class, 'user',]); //to get his data
+    Route::post('logout', [\App\Http\Controllers\AuthController::class, 'logout']);
+
+    Route::get('user', [\App\Http\Controllers\UserController::class, 'user']); //to get his data
+    Route::get('chart', [\App\Http\Controllers\DashboardController::class, 'chart']);
     Route::put('users/info', [\App\Http\Controllers\UserController::class, 'updateInfo',]); //to update his info
     Route::put('users/password', [\App\Http\Controllers\UserController::class, 'updatePassword',]); //to update his password
     Route::post('upload', [\App\Http\Controllers\ImageController::class, 'upload']);
