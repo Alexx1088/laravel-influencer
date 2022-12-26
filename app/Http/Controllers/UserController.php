@@ -15,8 +15,7 @@ class UserController extends Controller
     public function index()
     {
         \Gate::authorize('view', 'users');
-//$users = User::with('role')->paginate();
-        $users = User::with('role')->simplePaginate();
+        $users = User::with('role')->paginate();
         return UserResource::collection($users);
     }
 
@@ -34,7 +33,7 @@ class UserController extends Controller
             $request->only('first_name', 'last_name', 'email', 'role_id') + [
                 'password' => Hash::make(1234),
             ]);
-       // dd($user);
+        // dd($user);
         /* $user = User::create([
              'first_name' => $request->input('first_name'),
              'last_name' => $request->input('last_name'),
