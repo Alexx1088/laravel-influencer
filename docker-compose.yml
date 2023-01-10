@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+
+  # Web Server Service
+  nginx:
+    image: nginx:alpine
+    container_name: nginx2
+    ports:
+      - "8093:80"
+    volumes:
+      - ./:/var/www
+      - ./_docker/nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+      - db
+
+  db:
+    image: postgres
+    container_name: postgres2
+    volumes:
+      - ./_docker/postgresql/data:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_DB: influencer
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+
+  # Application Service
+  app:
+    container_name: backend_influencer
+    build:
+      context: ./_docker/php
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www
+    ports:
+      - "9000:9000"
+    working_dir: /var/www
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgAdmin2
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: alexx1088@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
