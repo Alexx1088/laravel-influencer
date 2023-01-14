@@ -42,18 +42,23 @@ use Laravel\Passport\HasApiTokens;
  * @property int|null $role_id
  * @property-read \App\Models\Role|null $role
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRoleId($value)
+ * @property int $is_influencer
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsInfluencer($value)
  */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = [
+    /*protected $fillable = [
         'first_name',
         'last_name',
         'password',
         'email',
         'role_id',
-    ];
+        'is_influencer',
+    ];*/
+
+    protected $guarded = ['id'];
 
     protected $hidden = [
         'password',
@@ -61,7 +66,8 @@ class User extends Authenticatable
     ];
 
     public function role() {
-        return $this->belongsTo(Role::class);
+        return $this->hasOneThrough(Role::class, UserRole::class,
+            'user_id', 'id', 'id', 'role_id');
     }
 
     public function permissions(){
@@ -70,7 +76,12 @@ class User extends Authenticatable
     public function hasAccess($access) {
         return $this->permissions()->contains($access);
     }
-
+    public function isAdmin():bool {
+        return $this->is_influencer === 0;
+    }
+    public function isInfluencer():bool {
+        return $this->is_influencer === 1;
+    }
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];

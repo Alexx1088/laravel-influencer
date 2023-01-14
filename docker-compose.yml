@@ -7,30 +7,29 @@ services:
             - ./:/var/www/
             - ./_docker/nginx/conf.d/:/etc/nginx/conf.d
         ports:
-            - "8877:80"
+            - "8878:80"
         depends_on:
-            - app1
-        container_name: project_nginx8
+            - app
+        container_name: project_nginx20
 
-    app1:
+    app:
         build:
             context: .
             dockerfile: _docker/app/Dockerfile
         volumes:
             - ./:/var/www/
         depends_on:
-            -  db1
-        container_name: project_app8
+            -  db
+        container_name: project_app20
 
-    db1:
+    db:
         image: mysql:8.0
-        restart: always
         volumes:
             - ./tmp/db:/var/lib/mysql
         environment:
-            MYSQL_DATABASE: admin
+            MYSQL_DATABASE: influencer
             MYSQL_ROOT_PASSWORD: root
         ports:
-            - "8102:3306"
+            - "8112:3306"
         command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
-        container_name: project_db8
+        container_name: project_db20
