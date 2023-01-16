@@ -64,4 +64,6 @@ Route::group([
     'prefix' => 'checkout',
 ], function () {
     Route::get('links/{code}', [\App\Http\Controllers\Checkout\LinkController::class, 'show']);
+    Route::post('orders', [\App\Http\Controllers\Checkout\OrderController::class, 'store']);
+    Route::post('orders/confirm', [\App\Http\Controllers\Checkout\OrderController::class, 'confirm']);
 });
