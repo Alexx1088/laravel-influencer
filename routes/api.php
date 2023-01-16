@@ -55,7 +55,13 @@ Route::group([
     Route::group([
         'middleware' => ['auth:api', 'scope:influencer'],
     ], function () {
-
+        Route::post('links', [\App\Http\Controllers\Influencer\LinkController::class, 'store']);
     });
+});
 
+// Checkout
+Route::group([
+    'prefix' => 'checkout',
+], function () {
+    Route::get('links/{code}', [\App\Http\Controllers\Checkout\LinkController::class, 'show']);
 });
