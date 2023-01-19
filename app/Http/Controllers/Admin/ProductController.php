@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ProductUpdatedEvent;
 use App\Http\Requests\ProductCreateRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
@@ -27,7 +28,7 @@ class ProductController
     {
         \Gate::authorize('edit', 'products');
         $product = Product::create($request->only('title', 'description', 'image', 'price'));
-
+        event(new ProductUpdatedEvent());
         return \response($product, Response::HTTP_CREATED);
     }
     public function update(Request $request, $id)
@@ -35,7 +36,7 @@ class ProductController
         \Gate::authorize('edit', 'products');
         $product = Product::find($id);
         $product->update($request->only('title', 'description', 'image', 'price'));
-
+        event(new ProductUpdatedEvent());
         return \response($product, Response::HTTP_ACCEPTED);
     }
 

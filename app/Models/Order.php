@@ -49,6 +49,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereZip($value)
  * @property string|null $transaction_id
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereTransactionId($value)
+ * @property-read mixed $admin_total
+ * @property-read mixed $influencer_total
  */
 class Order extends Model
 {
@@ -57,10 +59,17 @@ class Order extends Model
     public function orderItems() {
         return $this->hasMany(OrderItem::class);
     }
-    public function getTotalAttribute() {
+    public function getAdminTotalAttribute() {
+
       return $this->orderItems->sum(function (OrderItem $item) {
-          return $item->price * $item->quantity;
+          return $item->admin_revenue;
       });
+    }
+    public function getInfluencerTotalAttribute() {
+     usleep(50000);
+        return $this->orderItems->sum(function (OrderItem $item) {
+            return $item->influencer_revenue;
+        });
     }
 
     public function getNameAttribute() {

@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\Checkout;
 
+use App\Events\OrderCompletedEvent;
 use App\Models\Link;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use Cartalyst\Stripe\Stripe;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Message;
 
 class OrderController
 {
-    public function store(Request $request) {
-        $link = Link::whereCode( $request->input('code'))->first();
+    public function store(Request $request)
+    {
+        $link = Link::whereCode($request->input('code'))->first();
 
         \DB::beginTransaction();
 
@@ -74,15 +77,19 @@ class OrderController
         \DB::commit();
         return $source;
     }
-    public function confirm(Request $request) {
 
-        if (!$order = Order::whereTransactionId($request->input('source'))->first()){
+    public function confirm(Request $request)
+    {
+
+        if (!$order = Order::whereTransactionId($request->input('source'))->first()) {
             return response([
-               'error' => 'Order not found!'
+                'error' => 'Order not found!'
             ], 404);
         }
         $order->complete = 1;
         $order->save();
+
+        event(new OrderCompletedEvent($order));
 
         return response([
             'message' => 'success',
