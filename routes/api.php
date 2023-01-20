@@ -55,7 +55,17 @@ Route::group([
     Route::group([
         'middleware' => ['auth:api', 'scope:influencer'],
     ], function () {
-
+        Route::post('links', [\App\Http\Controllers\Influencer\LinkController::class, 'store']);
+        Route::get('stats', [\App\Http\Controllers\Influencer\StatsController::class, 'index']);
+        Route::get('rankings', [\App\Http\Controllers\Influencer\StatsController::class, 'rankings']);
     });
+});
 
+// Checkout
+Route::group([
+    'prefix' => 'checkout',
+], function () {
+    Route::get('links/{code}', [\App\Http\Controllers\Checkout\LinkController::class, 'show']);
+    Route::post('orders', [\App\Http\Controllers\Checkout\OrderController::class, 'store']);
+    Route::post('orders/confirm', [\App\Http\Controllers\Checkout\OrderController::class, 'confirm']);
 });

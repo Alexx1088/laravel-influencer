@@ -27,6 +27,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereUpdatedAt($value)
  * @mixin \Eloquent
  * @method static \Database\Factories\OrderItemFactory factory(...$parameters)
+ * @property string $influencer_revenue
+ * @property string $admin_revenue
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereAdminRevenue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderItem whereInfluencerRevenue($value)
  */
 class OrderItem extends Model
 {

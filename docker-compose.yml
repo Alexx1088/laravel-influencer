@@ -33,3 +33,11 @@ services:
             - "8112:3306"
         command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
         container_name: project_db20
+
+    mailCather:
+        image: 2kai/mailcatcher
+        container_name: mailcatcher
+        ports:
+            -   "1080:1080"
+
+

@@ -29,6 +29,28 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $order_items_count
  * @method static \Database\Factories\OrderFactory factory(...$parameters)
  * @property-read mixed $name
+ * @property string $code
+ * @property int $user_id
+ * @property string $influencer_email
+ * @property string|null $address
+ * @property string|null $address2
+ * @property string|null $city
+ * @property string|null $country
+ * @property string|null $zip
+ * @property int $complete
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereAddress2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereComplete($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereInfluencerEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereZip($value)
+ * @property string|null $transaction_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereTransactionId($value)
+ * @property-read mixed $admin_total
+ * @property-read mixed $influencer_total
  */
 class Order extends Model
 {
@@ -37,10 +59,17 @@ class Order extends Model
     public function orderItems() {
         return $this->hasMany(OrderItem::class);
     }
-    public function getTotalAttribute() {
+    public function getAdminTotalAttribute() {
+
       return $this->orderItems->sum(function (OrderItem $item) {
-          return $item->price * $item->quantity;
+          return $item->admin_revenue;
       });
+    }
+    public function getInfluencerTotalAttribute() {
+     usleep(50000);
+        return $this->orderItems->sum(function (OrderItem $item) {
+            return $item->influencer_revenue;
+        });
     }
 
     public function getNameAttribute() {
