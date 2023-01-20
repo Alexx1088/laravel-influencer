@@ -15,17 +15,14 @@ class UpdateRankingsCommand extends Command
     public function handle()
     {
         $users = User::where('is_influencer', 1)->get();
-        dd($users);
-    }
-
-           /* $users = User::where('is_influencer', 1)->get();
 
         $users->each(function (User $user) {
             $orders = Order::where('user_id', $user->id)->where('complete', 1)->get();
             $revenue = $orders->sum(function (Order $order) {
                 return (float)$order->influencer_total;
             });
+
             Redis::zadd('rankings', $revenue, $user->full_name);
         });
-    }*/
+    }
 }
