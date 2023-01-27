@@ -13,31 +13,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});*/
-
-
-// Common
-
-
-Route::group([
-    'middleware' => 'auth:api',
-], function () {
-    Route::post('logout', [\App\Http\Controllers\AuthController::class, 'logout']);
-
-});
-
 // Admin
 Route::prefix('admin')->group(function () {
     Route::post('login', [\App\Http\Controllers\AuthController::class, 'login']);
     Route::post('register', [\App\Http\Controllers\AuthController::class, 'register']);
-    Route::group([
-        'middleware' => ['auth:api', 'scope:admin'],
-    ], function () {
+
+    Route::middleware(['auth:api', 'scope:admin'])->group(function () {
         Route::get('user', [\App\Http\Controllers\AuthController::class, 'user']); //to get his data
         Route::put('users/info', [\App\Http\Controllers\AuthController::class, 'updateInfo',]); //to update his info
         Route::put('users/password', [\App\Http\Controllers\AuthController::class, 'updatePassword',]); // to update his password
+        Route::post('logout', [\App\Http\Controllers\AuthController::class, 'logout']);
 
         Route::get('chart', [\App\Http\Controllers\Admin\DashboardController::class, 'chart']);
         Route::post('upload', [\App\Http\Controllers\Admin\ImageController::class, 'upload']);
@@ -50,15 +35,18 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('permissions', \App\Http\Controllers\Admin\PermissionController::class)->only('index');
     });
 });
+
 // Influencer
-Route::group([
-    'prefix' => 'influencer',
-], function () {
+Route::prefix('influencer')->group(function () {
+    Route::post('login', [\App\Http\Controllers\AuthController::class, 'login']);
+    Route::post('register', [\App\Http\Controllers\AuthController::class, 'register']);
     Route::get('products', [\App\Http\Controllers\Influencer\ProductController::class, 'index']);
 
-    Route::group([
-        'middleware' => ['auth:api', 'scope:influencer'],
-    ], function () {
+    Route::middleware(['auth:api', 'scope:influencer'])->group(function () {
+        Route::get('user', [\App\Http\Controllers\AuthController::class, 'user']); //to get his data
+        Route::put('users/info', [\App\Http\Controllers\AuthController::class, 'updateInfo',]); //to update his info
+        Route::put('users/password', [\App\Http\Controllers\AuthController::class, 'updatePassword',]); // to update his password
+
         Route::post('links', [\App\Http\Controllers\Influencer\LinkController::class, 'store']);
         Route::get('stats', [\App\Http\Controllers\Influencer\StatsController::class, 'index']);
         Route::get('rankings', [\App\Http\Controllers\Influencer\StatsController::class, 'rankings']);
