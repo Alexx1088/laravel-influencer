@@ -17,7 +17,7 @@ class AuthController
         if (Auth::attempt($request->only('email', 'password'))){
             $user = Auth::user();
             $scope = $request->input('scope');
-            if ($user->isInfluencer() && $scope == 'influencer') {
+            if ($user->isInfluencer() && $scope !== 'influencer') {
                 return \response([
                     'error' => 'Access denied!',
                 ], Response::HTTP_FORBIDDEN);
@@ -35,6 +35,7 @@ class AuthController
         ], Response::HTTP_UNAUTHORIZED);
     }
     public function logout(){
+      //  dd(111);
         $cookie = \Cookie::forget('jwt');
         return \response([
             'message' => 'success',
