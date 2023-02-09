@@ -91,6 +91,11 @@ class OrderController
 
         event(new OrderCompletedEvent($order));
 
+       /* $data = $order->toArray();
+        $data['admin_total'] = $order->admin_total;
+        $data['influencer_total'] = $order->influencer_total;
+        OrderCompletedEvent::dispatch($data);*/
+
         return response([
             'message' => 'success',
         ]);
