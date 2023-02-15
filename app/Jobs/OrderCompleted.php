@@ -28,6 +28,7 @@ class OrderCompleted implements ShouldQueue
      */
     public function handle()
     {
+
        /* \Mail::send('influencer.admin', [
 
         ], function (Message $message) use ($order) {
