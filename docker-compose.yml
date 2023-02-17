@@ -11,6 +11,9 @@ services:
         depends_on:
             - app
         container_name: project_nginx20
+        networks:
+           -  lara_influencer
+
 
     app:
         build:
@@ -21,6 +24,9 @@ services:
         depends_on:
             -  db
         container_name: project_app20
+        networks:
+           - udemi-network
+           - lara_influencer
 
     db:
         image: mysql:8.0
@@ -44,6 +50,15 @@ services:
         container_name: redis_influencer
         ports:
             -   6379:6379
+        networks:
+           - lara_influencer
+networks:
+    udemi-network:
+        external: true
+    lara_influencer:
+        external: false
+
+
 
 
 

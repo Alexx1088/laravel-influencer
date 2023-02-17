@@ -61,7 +61,7 @@ class AuthController
         $headers = [
             'Autorization' => $request->headers->get('Autorization'),
         ];
-        $responce = \Http::withHeaders($headers)->get('users:8000/api/user');
+        $responce = \Http::withHeaders($headers)->get('nginx:80/api/user');
         return $responce->json();
 
         $user = \Auth::user();
