@@ -5,16 +5,45 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
 {
+    private $userService;
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+    public function user(Request $request)
+    {
+        $user = $this->userService->getUser();
+
+        $resource = new UserResource($user);
+
+        if ($user->isInfluencer()) {
+            return $resource->additional([
+                'data' => [
+                    'revenue' => $user->revenue,
+                ]
+            ]);
+        }
+        return $resource->additional([
+            'data' => [
+            //    'role' => $user->role(),
+                'role' => ['role' => 'admin'],
+            //    'permissions' => $user->permissions()
+                    'permissions' => ['edit' => 'all']
+            ],
+        ]);
+    }
+
     public function login(Request $request)
     {
-
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
             $scope = $request->input('scope');
@@ -38,7 +67,6 @@ class AuthController
 
     public function logout()
     {
-        //  dd(111);
         $cookie = \Cookie::forget('jwt');
         return \response([
             'message' => 'success',
@@ -50,31 +78,13 @@ class AuthController
         $user = User::create(
             $request->only('first_name', 'last_name', 'email',) + [
                 'password' => Hash::make($request->input('password')),
-                'role_id' => 1,
+                // 'role_id' => 1,
                 'is_influencer' => 1,
             ]);
         return response($user, Response::HTTP_CREATED);
     }
 
-    public function user(Request $request)
-    {
-        $headers = [
-            'Autorization' => $request->headers->get('Autorization'),
-        ];
-        $responce = \Http::withHeaders($headers)->get('nginx:80/api/user');
-        return $responce->json();
 
-        $user = \Auth::user();
-        $resource = new UserResource($user);
-        if ($user->isInfluencer()) {
-            return $resource;
-        }
-        return $resource->additional([
-            'data' => [
-                'permissions' => $user->permissions()
-            ],
-        ]);
-    }
     /*
         public function updateInfo(Request $request)
         {
